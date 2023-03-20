@@ -63,7 +63,7 @@ public class ProductRepo : IProductRepo
             responce.Success = true;
             responce.Message = "every real";
             responce.CssClass = "success";
-            responce.Tovars = products;
+            responce.Tovars = products!;
             return responce;
         }
         catch (Exception ex)
