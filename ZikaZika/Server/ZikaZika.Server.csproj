@@ -23,5 +23,9 @@
     <ProjectReference Include="..\Shared\ZikaZika.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+  </ItemGroup>
+
 
 </Project>

@@ -51,7 +51,7 @@ public class ProductRepo : IProductRepo
         try
         {
             var products = await _appDbContext.Products.ToListAsync();
-            if (products == null)
+            if (products == null!)
             {
                 responce.Success = false;
                 responce.Message = "every unreal";
