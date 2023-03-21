@@ -21,7 +21,7 @@ public class StatsService : IStatsService
 
     public async Task IncrementVisits()
     {
-        DateTime? lastVisit = await _localStorage.GetItemAsync<DateTime?>("lastVisit");
+        var lastVisit = await _localStorage.GetItemAsync<DateTime?>("lastVisit");
         if (lastVisit == null || ((DateTime)lastVisit).Date != DateTime.Now.Date)
         {
             await _localStorage.SetItemAsync("lastVisit", DateTime.Now);

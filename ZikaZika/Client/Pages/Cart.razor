@@ -4,7 +4,7 @@
 @if (!orderPlaced)
 {
     <h3>Shopping Cart</h3>
-    @if (cartItems == null || cartItems.Count <= 0)
+    @if (cartItems is not {Count: > 0 })
     {
         <span>You have no items in your cart.</span>
     }
@@ -60,7 +60,7 @@ else
 
 @code {
     List<CartItem> cartItems = new();
-    bool orderPlaced = false;
+    bool orderPlaced;
 
     protected override async Task OnInitializedAsync()
     {

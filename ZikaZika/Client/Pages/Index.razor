@@ -14,7 +14,7 @@ else
 {
     <AuthorizeView>
         <NotAuthorized>
-            <h1>Welcome to Blazing Shop!</h1>
+            <h1>Welcome to ZakaZaka</h1>
         </NotAuthorized>
         <Authorized>
             <h1>Welcome back, @LocalStorage.GetItemAsString("username")!</h1>
@@ -28,20 +28,13 @@ else
     [Parameter]
     public string CategoryUrl { get; set; }
 
-    private Category category = null;
+    private Category category;
 
     protected override async Task OnParametersSetAsync()
     {
         await ProductService.LoadProducts(CategoryUrl);
 
-        if (CategoryUrl != null)
-        {
-            category = CategoryService.Categories.FirstOrDefault(c => c.Url.ToLower().Equals(CategoryUrl.ToLower()));
-        }
-        else
-        {
-            category = null;
-        }
+        category = CategoryUrl != null ? CategoryService.Categories.FirstOrDefault(c => c.Url.ToLower().Equals(CategoryUrl.ToLower())) : null;
 
         await StatsService.IncrementVisits();
         await StatsService.GetVisits();

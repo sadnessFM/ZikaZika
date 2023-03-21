@@ -25,13 +25,9 @@ public class CartService : ICartService
 
     public async Task AddToCart(CartItem item)
     {
-        var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-        if (cart == null)
-        {
-            cart = new List<CartItem>();
-        }
+        var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart") ?? new List<CartItem>();
 
-        var sameItem = cart
+        CartItem? sameItem = cart
             .Find(x => x.ProductId == item.ProductId && x.EditionId == item.EditionId);
         if (sameItem == null)
         {
@@ -44,7 +40,7 @@ public class CartService : ICartService
 
         await _localStorage.SetItemAsync("cart", cart);
 
-        var product = await _productService.GetProduct(item.ProductId);
+        Product product = await _productService.GetProduct(item.ProductId);
         _toastService.ShowSuccess($"Added to cart: {product.Title}");
 
         OnChange.Invoke();
@@ -53,11 +49,7 @@ public class CartService : ICartService
     public async Task<List<CartItem>> GetCartItems()
     {
         var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-        if (cart == null)
-        {
-            return new List<CartItem>();
-        }
-        return cart;
+        return cart ?? new List<CartItem>();
     }
 
     public async Task DeleteItem(CartItem item)
@@ -68,7 +60,7 @@ public class CartService : ICartService
             return;
         }
 
-        var cartItem = cart.Find(x => x.ProductId == item.ProductId && x.EditionId == item.EditionId);
+        CartItem? cartItem = cart.Find(x => x.ProductId == item.ProductId && x.EditionId == item.EditionId);
         cart.Remove(cartItem);
 
         await _localStorage.SetItemAsync("cart", cart);

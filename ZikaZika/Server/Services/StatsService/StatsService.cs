@@ -16,11 +16,7 @@ public class StatsService : IStatsService
     public async Task<int> GetVisits()
     {
         var stats = await _context.Stats.FirstOrDefaultAsync();
-        if (stats == null)
-        {
-            return 0;
-        }
-        return stats.Visits;
+        return stats?.Visits ?? 0;
     }
 
     public async Task IncrementVisits()

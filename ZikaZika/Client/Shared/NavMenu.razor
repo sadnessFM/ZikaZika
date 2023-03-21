@@ -1,10 +1,9 @@
-﻿
-@inject ICategoryService CategoryService
+﻿@inject ICategoryService CategoryService
 @inject ILocalStorageService LocalStorage
-@inject AuthenticationStateProvider AuthStateProvider  
+@inject AuthenticationStateProvider AuthStateProvider
 
 <div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Blazing Shop</a>
+    <a class="navbar-brand" href="">верстка в процессе</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -61,7 +60,7 @@
 
     private async void Logout()
     {
-        await  LocalStorage.RemoveItemAsync("username");
+        await LocalStorage.RemoveItemAsync("username");
         await AuthStateProvider.GetAuthenticationStateAsync();
     }
 }
