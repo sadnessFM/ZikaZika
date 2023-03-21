@@ -3,31 +3,43 @@ using ZikaZika.Client.Repositories.Interfaces;
 using ZikaZika.Shared.DTO;
 using ZikaZika.Shared.Models;
 
-namespace ZikaZika.Client.Repositories.Services;
-
-public class ProductService : IProductService
+namespace ZikaZika.Client.Repositories.Services
 {
-    private readonly HttpClient _client;
-    public ProductService(HttpClient client)
+    public class ProductService : IProductService
     {
-        _client = client;
-    }
+        private readonly HttpClient httpClient;
+        public ProductService(HttpClient httpClient)
+        {
+            this.httpClient = httpClient;
+        }
+        public async Task<ServiceModel<Product>?> AddProduct(Product NewProduct)
+        {
+            var product = await httpClient.PostAsJsonAsync("api/Product/Add-Product", NewProduct);
+            return await product.Content.ReadFromJsonAsync<ServiceModel<Product>>();
+        }
 
-    public async Task<ServiceModel?> AddProduct(Product newProduct)
-    {
-        var product = await _client.PostAsJsonAsync("api/Product/AddProduct", newProduct);
-        return await product.Content.ReadFromJsonAsync<ServiceModel>();
-    }
+        public async Task<ServiceModel<Product>?> DeleteProduct(int ProductId)
+        {
+            var result = await httpClient.DeleteFromJsonAsync<ServiceModel<Product>>($"api/Product/{ProductId}");
+            return result;
+        }
 
-    public async Task<ServiceModel?> GetProduct(int id)
-    {
-        var product = await _client.GetAsync($"api/Product/GetProduct/getProduct/{id}");
-        return await product.Content.ReadFromJsonAsync<ServiceModel>();
-    }
+        public async Task<ServiceModel<Product>?> GetProduct(int ProductId)
+        {
+            var result = await httpClient.GetAsync($"api/Product/Get-Product/{ProductId}");
+            return await result.Content.ReadFromJsonAsync<ServiceModel<Product>>();
+        }
 
-    public async Task<ServiceModel?> GetProducts()
-    {
-        var product = await _client.GetAsync($"api/Product/GetProduct/getProducts");
-        return await product.Content.ReadFromJsonAsync<ServiceModel>();
+        public async Task<ServiceModel<Product>?> GetProducts()
+        {
+            var result = await httpClient.GetAsync("api/Product");
+            return await result.Content.ReadFromJsonAsync<ServiceModel<Product>>();
+        }
+
+        public async Task<ServiceModel<Product>?> UpdateProduct(Product NewProduct)
+        {
+            var result = await httpClient.PutAsJsonAsync("api/Product", NewProduct);
+            return await result.Content.ReadFromJsonAsync<ServiceModel<Product>>();
+        }
     }
 }

@@ -1,11 +1,12 @@
-﻿@page "/"
+﻿@page "/manage-products"
 @inject IProductService productService
-
+@inject IJSRuntime JS
+@inject NavigationManager navigationManager
 @if (serviceModel.List != null)
 {
     <div class="row">
         <div class="row sticky-top mb-1">
-            <div class="col-md-8 mt-1"><h3 class="text-muted" style="font-family:'Javanese Text'">Products</h3></div>
+            <div class="col-md-8 mt-1"><h3 class="text-muted" style="font-family:'Javanese Text'">Manage Products</h3></div>
         </div>
         <hr />
         @foreach (var product in serviceModel.List)
@@ -42,9 +43,13 @@
                         </div>
                     </a>
                     <div class="card-footer bg-white">
-                        <button class="btn btn-outline-danger btn-sm">
-                            <i class="oi oi-cart fs-5"></i>
-                            Add to cart
+                        <button class="btn btn-outline-warning btn-sm float-start" @onclick="(()=> HandleUpdate(product.Id))">
+                            <i class="oi oi-arrow-circle-top"></i>
+                            Update
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm float-end" @onclick="(async ()=> await HandleDelete(product.Id, product.Name!))">
+                            <i class="oi oi-trash"></i>
+                            Delete
                         </button>
                     </div>
                 </div>
@@ -74,7 +79,9 @@ else
 
 
 @code {
-    public ServiceModel<Product> serviceModel = new();
+    string Message = string.Empty;
+    string Cssclass = string.Empty;
+    public ServiceModel<Product> serviceModel = new ServiceModel<Product>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,6 +89,22 @@ else
     }
 
 
-    private async Task GetProducts() => serviceModel = await productService.GetProducts() ?? throw new InvalidOperationException();
+    private async Task GetProducts() => serviceModel = await productService.GetProducts() ?? throw new InvalidOperationException() ;
 
+    private async Task HandleDelete(int id, string name)
+    {
+        bool confirm = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {name} ?");
+        if (confirm)
+        {
+            var product = await productService.DeleteProduct(id);
+            Message = product!.Single!.Name + "deleted from the list";
+            Cssclass = product.CssClass!;
+            serviceModel.List = product.List;
+        }else{ return; }
+    }
+    
+    private void HandleUpdate(int id)
+    {
+        navigationManager.NavigateTo($"update-product/{id}");
+    }
 }

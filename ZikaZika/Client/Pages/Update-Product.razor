@@ -1,11 +1,11 @@
-﻿@page "/addProduct"
+﻿@page "/update-product/{id:int}"
 @inject IProductService productService
 
 <div class="row">
     <div class="col-md-6 offset-3">
-        <h3>Add Product</h3>
+        <h3>Update Product</h3>
 
-        <EditForm Model="@newProduct" OnValidSubmit="HandleAddProduct">
+        <EditForm Model="@newProduct" OnValidSubmit="HandleUpdateProduct">
             <DataAnnotationsValidator></DataAnnotationsValidator>
             <ValidationSummary class="form-control p-3"></ValidationSummary>
             <div class="form-group mt-2">
@@ -18,7 +18,7 @@
             </div>
             <div class="form-group mt-2">
                 <label class="form-label" for="url">Original Price</label>
-                <input type="text" id="price" min="0.5"  @bind="newProduct.OriginalPrice" class="form-control"></input>
+                <input type="text" id="price" min="0.5" @bind="newProduct.OriginalPrice" class="form-control"></input>
                 <ValidationMessage For="@(()=> newProduct.OriginalPrice)"></ValidationMessage>
             </div>
             <div class="form-group mt-2">
@@ -33,16 +33,23 @@
             </div>
             <div class="form-group mt-2">
                 <label class="form-label" for="description">Quantity</label>
-                <input type="number" id="description" min="1" @bind="newProduct.Quantity"  class="form-control"></input>
+                <input type="number" id="description" min="1" @bind="newProduct.Quantity" class="form-control"></input>
                 <ValidationMessage For="@(()=> newProduct.Quantity)"></ValidationMessage>
             </div>
-            <div class="form-group mt-2">
-                <label class="form-label" for="image">Image</label>&nbsp; <span class="text-danger fw-bold">@uploadMessage</span>
-                <InputFile id="image" OnChange="OnFileChange" class="form-control"></InputFile>
-                <ValidationMessage For="@(()=> newProduct.Image)"></ValidationMessage>
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="@newProduct.Image" class="card-img-top" style="width: 150px; height:100px;" />
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mt-2">
+                        <label class="form-label" for="image">Image</label>&nbsp; <span class="text-danger fw-bold">@uploadMessage</span>
+                        <InputFile id="image" OnChange="OnFileChange" class="form-control"></InputFile>
+                        <ValidationMessage For="@(()=> newProduct.Image)"></ValidationMessage>
+                    </div>
+                </div>
             </div>
-            <div class="form-check mt-2">
-                <button type="submit" class="btn btn-primary"> <i class="oi oi-plus"></i> Create</button>
+            <div class="form-group mt-2">
+                <button type="submit" class="btn btn-primary float-end"> <i class="oi oi-arrow-circle-top"></i> Update</button>
             </div>
         </EditForm>
     </div>
@@ -50,23 +57,25 @@
 
 
 @code {
+    [Parameter] public int Id { get; set; }
     public Product newProduct = new Product();
     private string? uploadMessage;
     private string? Message = string.Empty;
     private string? CssClass = string.Empty;
-    async Task HandleAddProduct()
+
+    async Task HandleUpdateProduct()
     {
         Message = "";
-        var response = await productService.AddProduct(newProduct);
-            Message = response!.Message;
-            CssClass = response!.CssClass; 
+        var response = await productService.UpdateProduct(newProduct);
+        Message = response!.Message;
+        CssClass = response!.CssClass;
     }
 
 
     async Task OnFileChange(InputFileChangeEventArgs e)
     {
         FileInfo fileInfo = new FileInfo(e.File.Name);
-        if(fileInfo.Extension.ToLower().Contains(".jpg"))
+        if (fileInfo.Extension.ToLower().Contains(".jpg"))
         {
             uploadMessage = "";
             var format = "image/jpg";
@@ -78,5 +87,18 @@
 
         }
         else { uploadMessage = "Invalid file selected (only JPG file)"; }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+        {
+            var product = await productService.GetProduct(Id);
+            Message = product!.Message;
+            CssClass = product.CssClass;
+            if (product.Single != null)
+                newProduct = product!.Single!;
+
+        }
     }
 }

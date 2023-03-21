@@ -5,7 +5,9 @@ namespace ZikaZika.Client.Repositories.Interfaces;
 
 public interface IProductService
 {
-    public Task<ServiceModel?> AddProduct(Product product);
-    public Task<ServiceModel?> GetProduct(int id);
-    public Task<ServiceModel?> GetProducts();
+    public Task<ServiceModel<Product>?> AddProduct(Product NewProduct);
+    public Task<ServiceModel<Product>?> UpdateProduct(Product NewProduct);
+    public Task<ServiceModel<Product>?> GetProducts();
+    public Task<ServiceModel<Product>?> GetProduct(int ProductId);
+    public Task<ServiceModel<Product>?> DeleteProduct(int ProductId);
 }

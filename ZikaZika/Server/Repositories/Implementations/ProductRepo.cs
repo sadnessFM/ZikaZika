@@ -4,111 +4,181 @@ using ZikaZika.Server.Repositories.Interfaces;
 using ZikaZika.Shared.DTO;
 using ZikaZika.Shared.Models;
 
-namespace ZikaZika.Server.Repositories.Implementations;
-
-public class ProductRepo : IProductRepo
+namespace ZikaZika.Server.Repositories.Implementations
 {
-    private readonly AppDbContext _appDbContext;
+    public class ProductRepo : IProductRepo
+    {
+        private readonly AppDbContext appDbContext;
 
-    public ProductRepo(AppDbContext context)
-    {
-       _appDbContext = context;
-    }
-    public async Task<ServiceModel> AddProduct(Product? product)
-    {
-        var responce = new ServiceModel();
-        if (product != null)
+        public ProductRepo(AppDbContext appDbContext)
         {
-            try
-            {
-                _appDbContext.Products.Add(product);
-                await _appDbContext.SaveChangesAsync();
-
-                responce.Tovar = product;
-                responce.Message = "added";
-                responce.CssClass = "success";
-                return responce;
-
-            }
-            catch (Exception ex)
-            {
-                responce.CssClass += "error";
-                responce.Message = ex.Message;
-                return responce;
-            }
+            this.appDbContext = appDbContext;
         }
 
-        responce.Success = false;
-        responce.Message = "empty";
-        responce.CssClass = "warning";
-        responce.Tovar = null!;
-        return responce;
-    }
-
-    public async Task<ServiceModel> GetProducts()
-    {
-        var responce = new ServiceModel();
-        try
+        public async Task<ServiceModel<Product>> AddProduct(Product NewProduct)
         {
-            var products = await _appDbContext.Products.ToListAsync();
-            if (products == null!)
+            var Response = new ServiceModel<Product>();
+            if (NewProduct != null)
             {
-                responce.Success = false;
-                responce.Message = "every unreal";
-                responce.CssClass = "info";
-                responce.Tovars = null!;
-                return responce;
-            }
-
-            responce.Success = true;
-            responce.Message = "every real";
-            responce.CssClass = "success";
-            responce.Tovars = products!;
-            return responce;
-        }
-        catch (Exception ex)
-        {
-            responce.CssClass += "error";
-            responce.Message = ex.Message;
-            return responce;
-        }
-
-    }
-
-    public async Task<ServiceModel> GetProduct(int productId)
-    {
-        var responce = new ServiceModel();
-        if (productId > 0)
-        {
-            try
-            {
-                Product? product = await _appDbContext.Products.SingleOrDefaultAsync(p => p.Id == productId);
-                if (product == null)
+                try
                 {
-                    responce.Success = false;
-                    responce.Message = "unreal";
-                    responce.CssClass = "info";
-                    responce.Tovar = null!;
-                    return responce;
+                    appDbContext.Products.Add(NewProduct);
+                    await appDbContext.SaveChangesAsync();
+                    Response.Single = NewProduct;
+                    Response.Success = true;
+                    Response.Message = "Product added successfully!";
+                    Response.CssClass = "success";
+                    return Response;
+                }
+                catch (Exception exMessage)
+                {
+                    Response.CssClass = "danger";
+                    Response.Message = exMessage.Message.ToString();
+                    return Response;
+                }
+            }
+            else
+            {
+                Response.Success = false;
+                Response.Message = "Sorry New product object is empty!";
+                Response.CssClass = "warning";
+                Response.Single = null!;
+                return Response;
+            }
+        }
+
+        public async Task<ServiceModel<Product>> DeleteProduct(int ProductId)
+        {
+            var response = new ServiceModel<Product>();
+            var product = await GetProduct(ProductId);
+            if(product.Single != null)
+            {
+                appDbContext.Products.Remove(product.Single);
+                await appDbContext.SaveChangesAsync();
+                response.Message = "Product deleted!";
+                response.CssClass = "success fw-bold";
+                response.Single = product.Single;
+                var products = await GetProducts();
+                response.List = products.List;
+            }
+            else
+            {
+                response.Message = product.Message;
+                response.CssClass = product.CssClass;
+            }
+            return response;
+            
+        }
+
+        public async Task<ServiceModel<Product>> GetProduct(int ProductId)
+        {
+            var Response = new ServiceModel<Product>();
+            if (ProductId > 0)
+            {
+                try
+                {
+                    var product = await appDbContext.Products.SingleOrDefaultAsync(p => p.Id == ProductId);
+                    if (product != null)
+                    {
+                        Response.Single = product;
+                        Response.Success = true;
+                        Response.Message = "Product found!";
+                        Response.CssClass = "success";
+                        return Response;
+                    }
+                    else
+                    {
+                        Response.Success = false;
+                        Response.Message = "Sorry product you are looking for doesn't exist!";
+                        Response.CssClass = "danger";
+                        Response.Single = null!;
+                        return Response;
+                    }
+
+                }
+                catch (Exception exMessage)
+                {
+                    Response.CssClass = "danger";
+                    Response.Message = exMessage.Message.ToString();
+                    return Response;
+                }
+            }
+            else
+            {
+                Response.Success = false;
+                Response.Message = "Sorry New product object is empty!";
+                Response.CssClass = "warning";
+                Response.Single = null!;
+                return Response;
+            }
+        }
+
+        public async Task<ServiceModel<Product>> GetProducts()
+        {
+            var Response = new ServiceModel<Product>();
+            try
+            {
+                var products = await appDbContext.Products.ToListAsync();
+                if (products != null)
+                {
+                    Response.List = products;
+                    Response.Success = true;
+                    Response.Message = "Products found!";
+                    Response.CssClass = "success";
+                    return Response;
+                }
+                else
+                {
+                    Response.Success = false;
+                    Response.Message = "Sorry No products found!";
+                    Response.CssClass = "info";
+                    Response.List = null!;
+                    return Response;
                 }
 
-                responce.Success = true;
-                responce.Message = "real";
-                responce.CssClass = "success";
-                responce.Tovar = product;
-                return responce;
             }
-            catch (Exception ex)
+            catch (Exception exMessage)
             {
-                responce.CssClass += "error";
-                responce.Message = ex.Message;
-                return responce;
+                Response.CssClass = "danger";
+                Response.Message = exMessage.Message.ToString();
+                return Response;
             }
         }
-        responce.Success = false;
-        responce.Message = "empty";
-        responce.CssClass = "warning";
-        responce.Tovar = null!;
-        return responce;
+
+        public async Task<ServiceModel<Product>> UpdateProduct(Product NewProduct)
+        {
+            var response = new ServiceModel<Product>();
+            if(NewProduct != null)
+            {
+                var product = await GetProduct(NewProduct.Id);
+                if(product.Single != null)
+                {
+                    product.Single.Name = NewProduct.Name;
+                    product.Single.OriginalPrice = NewProduct.OriginalPrice;
+                    product.Single.NewPrice = NewProduct.NewPrice;
+                    product.Single.Description = NewProduct.Description;
+                    product.Single.Quantity = NewProduct.Quantity;
+                    product.Single.Image = NewProduct.Image;
+                    await appDbContext.SaveChangesAsync();
+                    response.Message = "Product updated successfully !";
+                    response.Success = true;
+                    response.CssClass = "success fw-bold";
+                    response.Single = product.Single;
+                }
+                else
+                {
+                    response.Message = "Sorry product not found";
+                    response.Success = false;
+                    response.CssClass = "danger fw-bold";
+                }
+            }
+            else
+            {
+                response.Message = "Sorry product object is empty";
+                response.Success = false;
+                response.CssClass = "danger fw-bold";
+            }
+            return response;
+        }
     }
 }

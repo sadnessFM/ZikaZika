@@ -21,7 +21,7 @@ namespace ZikaZika.Server.Data.Migrations
                     OriginalPrice = table.Column<double>(type: "float", nullable: false),
                     NewPrice = table.Column<double>(type: "float", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    InStock = table.Column<bool>(type: "bit", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
                     UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },

@@ -38,8 +38,8 @@ namespace ZikaZika.Server.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("InStock")
-                        .HasColumnType("bit");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

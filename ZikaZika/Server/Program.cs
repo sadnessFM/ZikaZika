@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using ZikaZika.Server.Data;
+using ZikaZika.Server.Repositories.Implementations;
+using ZikaZika.Server.Repositories.Interfaces;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 // Add services to the container.
 
@@ -13,9 +15,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-    
+builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+builder.Services.AddScoped<IProductRepo, ProductRepo>();
 
-var app = builder.Build();
+
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
