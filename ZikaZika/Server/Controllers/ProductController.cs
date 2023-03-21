@@ -1,48 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ZikaZika.Server.Repositories.Interfaces;
-using ZikaZika.Shared.DTO;
-using ZikaZika.Shared.Models;
+using ZikaZika.Server.Services.ProductService;
+using ZikaZika.Shared;
 
-namespace ZikaZika.Server.Controllers
+namespace ZikaZika.Server.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ProductController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductController : ControllerBase
+    private readonly IProductService _productService;
+
+    public ProductController(IProductService productService)
     {
-        private readonly IProductRepo productRepo;
-        public ProductController(IProductRepo productRepo)
-        {
-            this.productRepo = productRepo;
-        }
+        _productService = productService;
+    }
 
-        [HttpPost("Add-Product")]
-        public async Task<ActionResult<ServiceModel<Product>>> AddProduct(Product NewProduct)
-        {
-            return Ok(await productRepo.AddProduct(NewProduct));
-        }
+    [HttpGet]
+    public async Task<ActionResult<List<Product>>> GetAllProducts()
+    {
+        return Ok(await _productService.GetAllProducts());
+    }
 
-        [HttpGet]
-        public async Task<ActionResult<ServiceModel<Product>>> GetProducts()
-        {
-            return Ok(await productRepo.GetProducts());
-        }
+    [HttpGet("Category/{categoryUrl}")]
+    public async Task<ActionResult<List<Product>>> GetProductsByCategory(string categoryUrl)
+    {
+        return Ok(await _productService.GetProductsByCategory(categoryUrl));
+    }
 
-        [HttpGet("Get-Product/{ProductId:int}")]
-        public async Task<ActionResult<ServiceModel<Product>>> GetProduct(int ProductId)
-        {
-            return Ok(await productRepo.GetProduct(ProductId));
-        }
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Product>> GetProduct(int id) {
+        return Ok(await _productService.GetProduct(id));
+    }
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult<ServiceModel<Product>>> DeleteProduct(int id)
-        {
-            return Ok(await productRepo.DeleteProduct(id));
-        }
-
-        [HttpPut]
-        public async Task<ActionResult<ServiceModel<Product>>> UpdateProduct(Product newProduct)
-        {
-            return Ok(await productRepo.UpdateProduct(newProduct));
-        }
+    [HttpGet("Search/{searchText}")]
+    public async Task<ActionResult<List<Product>>> SearchProducts(string searchText)
+    {
+        return Ok(await _productService.SearchProducts(searchText));
     }
 }

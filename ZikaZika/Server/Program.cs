@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ZikaZika.Server.Data;
-using ZikaZika.Server.Repositories.Implementations;
-using ZikaZika.Server.Repositories.Interfaces;
+using ZikaZika.Server.Services.CategoryService;
+using ZikaZika.Server.Services.ProductService;
+using ZikaZika.Server.Services.StatsService;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -11,12 +12,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
-builder.Services.AddScoped<IProductRepo, ProductRepo>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IStatsService, StatsService>();
 
 
 WebApplication app = builder.Build();

@@ -1,98 +1,98 @@
-﻿@page "/productDetails/{id:int}"
-@inject IProductService productService
+﻿@page "/product/{id:int}"
+@inject IProductService ProductService
+@inject ICartService CartService 
+@inject ILocalStorageService LocalStorage
+@inject IToastService ToastService 
 
-@if (ServiceModel.Single != null)
-{
-    <div class="row">
-        <div class="row sticky-top mb-1">
-            <div class="col-md-12 mt-1"><h3 class="text-muted" style="font-family:'Javanese Text'">Product</h3></div>
-        </div>
-        <hr />
-        <div class="col-md-6 offset-3">
-            <div class="card border-1 m-2 mb-2">
-                <div class="form-group mt-2">
-                    <div class="alert alert-@_cssClass">@_message</div>
-                </div>
-                <div class="card-header text-center">
-                    <img class="card-img-top" src="@ServiceModel.Single.Image" style="width:300px; height:200px" />
-                    @if (DateTime.Now < ServiceModel.Single.UploadedDate.AddDays(30))
+<div class="views">
+    <i class="oi oi-eye"></i> @GetViewString()
+</div>
+<div class="media">
+    <div class="media-img-big-wrapper mr-2">
+        <img class="media-img-big" src="@product.Image" alt="@product.Title" />
+    </div>
+    <div class="media-body">
+        <h2 class="mb-0">@product.Title</h2>
+        <p>@product.Description</p>
+        @if (product.Variants != null && product.Variants.Count > 1)
+        {
+            <div class="form-group">
+                <select class="form-control" @bind="currentEditionId">
+                    @foreach (var variant in product.Variants)
                     {
-                        <span class="badge bg-info position-absolute top-0 start-100 translate-middle badge rounded-pill">New</span>
+                        <option value="@variant.EditionId">@variant.Edition.Name</option>
                     }
-                </div>
-                <div class="card-body">
-                    <p>
-                        <span class="text-primary">@ServiceModel.Single.Name </span>&nbsp; &nbsp;
-                        <br />
-                        <span class="text-secondary text-muted fs-6">@ServiceModel.Single.Description</span><br>
-                        @if (ServiceModel.Single.NewPrice != 0 && ServiceModel.Single.NewPrice < ServiceModel.Single.OriginalPrice)
-                        {
-                            <span class="text-danger text-decoration-line-through" style="font-size:16px;"><i>Gh¢@ServiceModel.Single.OriginalPrice</i></span>
-                            <span>&nbsp; &nbsp;</span>
-                            <span class="badge bg-primary badge rounded-end bg-danger">Reduced</span>
-                            <br />
-                            <span class="text-primary text-center" style="font-size:16px;"><i>Gh¢@ServiceModel.Single.NewPrice</i></span>
-                        }
-                        else
-                        {
-                            <span class="text-danger" style="font-size:16px;"><i>Gh¢@ServiceModel.Single.OriginalPrice</i></span>
-                        }
-                        <h6 class="text-muted">In Stock: @ServiceModel.Single.Quantity</h6>
-                        <input type="number" @bind="_quantity" min="1" class="form-control w-25"></input>
-                    </p>
-
-                </div>
-                <div class="card-footer bg-white">
-                    <button class="btn btn-outline-danger btn-sm" @onclick="async ()=> await AddProductToCart(ServiceModel.Single.Id)">
-                        <i class="oi oi-cart fs-5"></i>
-                        Add to cart
-                    </button>
-                </div>
+                </select>
             </div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-3 mb-5">
-                <div class="d-flex justify-content-center mt-5">
-                    <div class="spinner-border text-danger" role="status" style="width: 5rem; height: 5rem;">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
+        }
+        @if (GetSelectedVariant() != null)
+        {
+            @if (GetSelectedVariant().OriginalPrice > GetSelectedVariant().Price)
+            {
+                <h6 class="text-muted original-price">$@GetSelectedVariant().OriginalPrice</h6>
+            }
+            <h4 class="price">
+                $@GetSelectedVariant().Price
+            </h4>
+        }
+        <EditForm Model="cartItem">
+            <div class="form-group">
+                <InputNumber id="quantity" @bind-Value="cartItem.Quantity" class="form-control" style="width: 70px;" />
             </div>
-        </div>
+        </EditForm>
+        <button class="btn btn-primary" @onclick="AddToCart"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart</button>
     </div>
-}
 
-
+</div>
 
 @code {
-    [Parameter] public int Id { get; set; }
-    private int _quantity = 1;
-    private string? _message = string.Empty;
-    private string? _cssClass = string.Empty;
-    public ServiceModel<Product> ServiceModel = new ServiceModel<Product>();
+    private Product product = new();
 
-    protected override async Task OnParametersSetAsync() => await GetProducts();
+    private int currentEditionId = 1;
 
-    private async Task GetProducts() => ServiceModel = await productService.GetProduct(Id) ?? throw new InvalidOperationException();
+    private CartItem cartItem = new() { Quantity = 1 };
 
-    private async Task AddProductToCart(int productId)
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
     {
-        _message = "";
-        _cssClass = "";
-        if (_quantity >= 1 && _quantity <= ServiceModel.Single!.Quantity)
+        product = await ProductService.GetProduct(Id);
+        if (product.Variants.Count > 0)
         {
-
-        }
-        else
-        {
-            _message = "Invalid quantity provided";
-            _cssClass = "warning";
+            currentEditionId = product.Variants[0].EditionId;
         }
     }
-}
 
+    private ProductVariant GetSelectedVariant()
+    {
+        var variant = product.Variants.FirstOrDefault(v => v.EditionId == currentEditionId);
+        return variant;
+    }
+
+    private async Task AddToCart()
+    {
+        var productVariant = GetSelectedVariant();
+
+        cartItem.EditionId = productVariant.EditionId;
+        cartItem.EditionName = productVariant.Edition.Name;
+        cartItem.Image = product.Image;
+        cartItem.Price = productVariant.Price;
+        cartItem.ProductId = productVariant.ProductId;
+        cartItem.ProductTitle = product.Title;
+
+        await CartService.AddToCart(cartItem);
+    }
+
+    private string GetViewString()
+    {
+        if (product.Views > 1000000)
+            return $"{((float)product.Views / 1000000).ToString("#.##")}M";
+        if (product.Views > 100000)
+            return $"{((float)product.Views / 1000).ToString("#")}K";
+        if (product.Views > 1000)
+            return $"{((float)product.Views / 1000).ToString("#.##")}K";
+
+        return product.Views.ToString("0##");
+    }
+}
