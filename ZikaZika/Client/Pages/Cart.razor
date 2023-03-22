@@ -3,10 +3,10 @@
 
 @if (!orderPlaced)
 {
-    <h3>Shopping Cart</h3>
+    <h3>Корзина</h3>
     @if (cartItems is not {Count: > 0 })
     {
-        <span>You have no items in your cart.</span>
+        <span>нихуя нет</span>
     }
     else
     {
@@ -18,28 +18,28 @@
                     <div class="item-name">
                         <h5><a href="/product/@item.ProductId">@item.ProductTitle</a></h5>
                         <span>@item.EditionName</span><br />
-                        <button class="btn-delete" @onclick="@(() => DeleteItem(item))">Delete</button>
+                        <button class="btn-delete" @onclick="@(() => DeleteItem(item))">Удалить</button>
                         <EditForm Model="item">
                             <InputNumber id="quantity" @bind-Value="item.Quantity"
                                          class="form-control" style="width: 70px" />
                         </EditForm>
                     </div>
-                    <div class="item-price">$@(item.Price * item.Quantity)</div>
+                    <div class="item-price">@(item.Price * item.Quantity) руб.</div>
                 </div>
             }
             <div class="item-price">
-                Total (@cartItems.Count): $@cartItems.Sum(item => item.Price * item.Quantity)
+                Итог (@cartItems.Count): @cartItems.Sum(item => item.Price * item.Quantity) руб.
             </div>
             <div style="text-align: center; margin-top: 10px;">
-                <button class="btn btn-primary btn-lg" @onclick="PlaceOrder">Place Order</button>
+                <button class="btn btn-primary btn-lg" @onclick="PlaceOrder">Заказать</button>
             </div>
         </div>
     }
 }
 else
 {
-    <h3>Thank you for your order!</h3>
-    <h4>Here's what you'll get:</h4>
+    <h3>Спасибо за покупку!</h3>
+    <h4>Ваши товары:</h4>
     <div>
         @foreach (var item in cartItems)
         {
@@ -53,7 +53,7 @@ else
             </div>
         }
         <div class="item-price">
-            Total (@cartItems.Count): $@cartItems.Sum(item => item.Price * item.Quantity)
+            Итог (@cartItems.Count): @cartItems.Sum(item => item.Price * item.Quantity) руб.
         </div>
     </div>
 }

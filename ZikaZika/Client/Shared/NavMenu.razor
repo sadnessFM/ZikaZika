@@ -13,7 +13,7 @@
     <ul class="nav flex-column">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="oi oi-home" aria-hidden="true"></span> Главная
             </NavLink>
         </li>
         <li class="dropdown-divider"></li>
@@ -30,12 +30,12 @@
             <AuthorizeView>
                 <NotAuthorized>
                     <NavLink class="nav-link" href="login">
-                        <span class="oi oi-account-login" aria-hidden="true"></span> Login
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Логин
                     </NavLink>
                 </NotAuthorized>
                 <Authorized>
                     <a class="nav-link" @onclick="Logout" style="cursor: pointer">
-                        <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> Выйти из аккаунта
                     </a>
                 </Authorized>
             </AuthorizeView>
