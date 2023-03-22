@@ -14,7 +14,7 @@
                 <a href="/product/@product.Id">
                     <h4 class="mb-0">@product.Title</h4>
                 </a>
-                <p>@product.Description</p>
+                <p>@GetDescription(product.Description)</p>
                 <h5 class="price">
                     @GetPriceText(product)
                 </h5>
@@ -50,5 +50,12 @@
                 return $"От {minPrice} руб.";
             }
         }
+    }
+
+    private string GetDescription(string description)
+    {
+        return description.Length > 50
+            ? description[..50] + "..."
+            : description;
     }
 }
