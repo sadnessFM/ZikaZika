@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ZikaZika.Server.Data;
 using ZikaZika.Server.Services.CategoryService;
 using ZikaZika.Shared;
@@ -47,5 +48,13 @@ public class ProductService : IProductService
         return await _context.Products
             .Where(p => p.Title.Contains(searchText) || p.Description.Contains(searchText))
             .ToListAsync();
+    }
+
+    public async Task<Product> AddProduct(Product product)
+    {
+        _context.Add(product);
+        await _context.SaveChangesAsync();
+        return product;
+
     }
 }

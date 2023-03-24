@@ -38,4 +38,9 @@ public class ProductService : IProductService
     {
         return await _http.GetFromJsonAsync<List<Product>>($"api/Product/Search/{searchText}");
     }
+
+    public async Task<Product> AddProduct(Product product)
+    {
+        return await _http.PostAsync($"api/Product/AddProduct/{product}", product);
+    }
 }
