@@ -49,6 +49,20 @@ public class ProductService : IProductService
         HttpResponseMessage response = await _http.PostAsync($"api/ProductController/AddProduct/{product}", content);
         response.EnsureSuccessStatusCode();
         string responseBody = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<Product>(responseBody);
+        return JsonSerializer.Deserialize<Product>(responseBody) ?? throw new InvalidOperationException();
     }
 }
+
+/* "variants": [
+{
+    "productId": 0,
+    "edition": {
+        "id": 0,
+        "name": "string"
+    },
+    "editionId": 0,
+    "price": 0,
+    "originalPrice": 0
+}
+],
+*/

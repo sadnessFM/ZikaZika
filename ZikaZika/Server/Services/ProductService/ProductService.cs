@@ -26,7 +26,7 @@ public class ProductService : IProductService
         Product product = await _context.Products
             .Include(p => p.Variants)
             .ThenInclude(v => v.Edition)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == id) ?? throw new InvalidOperationException();
 
         product.Views++;
 
@@ -51,6 +51,8 @@ public class ProductService : IProductService
 
     public async Task<Product> AddProduct(Product product)
     {
+        await _context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Products ON");
+        _context.Set<Product>().AsNoTracking();
         _context.AddRange(product);
         await _context.SaveChangesAsync();
         return product;
