@@ -47,4 +47,11 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
+app.UseCors(cors => cors
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(_ => true)
+    .AllowCredentials()
+);
+
 app.Run();

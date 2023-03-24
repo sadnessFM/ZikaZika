@@ -11,7 +11,7 @@ namespace ZikaZika.Server.Migrations
     [Migration("20210406090626_Fixed1984Image")]
     partial class Fixed1984Image
     {
-        protected void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

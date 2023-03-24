@@ -1,4 +1,7 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using ZikaZika.Shared;
 
 namespace ZikaZika.Client.Services.ProductService;
@@ -41,6 +44,11 @@ public class ProductService : IProductService
 
     public async Task<Product> AddProduct(Product product)
     {
-        return await _http.PostAsync($"api/Product/AddProduct/{product}", product);
+        string jsonProduct = JsonSerializer.Serialize(product);
+        StringContent content = new(jsonProduct, Encoding.UTF8, "application/json");
+        HttpResponseMessage response = await _http.PostAsync($"api/ProductController/AddProduct/{product}", content);
+        response.EnsureSuccessStatusCode();
+        string responseBody = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<Product>(responseBody);
     }
 }

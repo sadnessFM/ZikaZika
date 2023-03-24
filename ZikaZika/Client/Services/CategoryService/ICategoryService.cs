@@ -2,7 +2,7 @@
 
 namespace ZikaZika.Client.Services.CategoryService;
 
-interface ICategoryService
+internal interface ICategoryService
 {
     List<Category> Categories { get; set; }
     Task LoadCategories();

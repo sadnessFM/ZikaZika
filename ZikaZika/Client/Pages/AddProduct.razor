@@ -1,71 +1,42 @@
 ﻿@page "/AddProduct"
-
+@inject IProductService _service
 <h1>Добавление продукта</h1>
 
-<EditForm Model="@product" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="@_product" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    
+    <div class="form-group">
+        <label for="IdProduct">Айди:</label>
+        <InputNumber id="IdProduct" class="form-control" @bind-Value="@_product.Id" />
+        <ValidationMessage For="@(() => _product.Id)" />
+    </div>
 
     <div class="form-group">
         <label for="name">Название:</label>
-        <InputText id="name" class="form-control" @bind-Value="@product.Title" />
-        <ValidationMessage For="@(() => product.Title)" />
+        <InputText id="name" class="form-control" @bind-Value="@_product.Title" />
+        <ValidationMessage For="@(() => _product.Title)" />
     </div>
 
     <div class="form-group">
         <label for="description">Описание:</label>
-        <InputTextArea id="description" class="form-control" @bind-Value="@product.Description" />
-        <ValidationMessage For="@(() => product.Description)" />
+        <InputTextArea id="description" class="form-control" @bind-Value="@_product.Description" />
+        <ValidationMessage For="@(() => _product.Description)" />
     </div>
 
     <div class="form-group">
-        <label for="price">Категория:</label>
-        <InputNumber id="price" class="form-control" @bind-Value="@product.CategoryId" />
-        <ValidationMessage For="@(() => product.CategoryId)" />
+        <label for="CategoryId">Категория:</label>
+        <InputNumber id="CategoryId" class="form-control" @bind-Value="@_product.CategoryId" />
+        <ValidationMessage For="@(() => _product.CategoryId)" />
     </div>
-
-    <div class="form-group">
-        <label for="price">Цена:</label>
-        <InputNumber id="price" class="form-control" @bind-Value="@product.Price" />
-        <ValidationMessage For="@(() => product.Price)" />
-    </div>
-
-    <div class="form-group">
-        <label for="price">Цена:</label>
-        <InputNumber id="price" class="form-control" @bind-Value="@product.Price" />
-        <ValidationMessage For="@(() => product.Price)" />
-    </div>
-
-    <div class="form-group">
-        <label for="price">Цена:</label>
-        <InputNumber id="price" class="form-control" @bind-Value="@product.Price" />
-        <ValidationMessage For="@(() => product.Price)" />
-    </div>
-
-
-    <div class="form-group">
-        <label for="price">Цена:</label>
-        <InputNumber id="price" class="form-control" @bind-Value="@product.Price" />
-        <ValidationMessage For="@(() => product.Price)" />
-    </div>
-
 
     <button type="submit" class="btn btn-primary" @onclick="@HandleValidSubmit">Добавить</button>
 </EditForm>
 
 @code {
-    private Product product = new();
-
+    private Product _product = new();
     private void HandleValidSubmit()
     {
-        
+        _service.AddProduct(_product);
     }
-
-    private Product createNewProduct(int ID, string name, string description, int catId) 
-        => new Product({
-        Id = ID,
-        Description = description,
-        Title = name,
-        CategoryId = catId
-    };
 }

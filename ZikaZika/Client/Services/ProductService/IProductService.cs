@@ -9,4 +9,5 @@ public interface IProductService
     Task LoadProducts(string categoryUrl = null);
     Task<Product> GetProduct(int id);
     Task<List<Product>> SearchProducts(string searchText);
+    Task<Product> AddProduct(Product product);
 }

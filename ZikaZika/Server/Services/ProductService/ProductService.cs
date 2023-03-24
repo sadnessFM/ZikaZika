@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ZikaZika.Server.Data;
 using ZikaZika.Server.Services.CategoryService;
 using ZikaZika.Shared;
@@ -52,9 +51,8 @@ public class ProductService : IProductService
 
     public async Task<Product> AddProduct(Product product)
     {
-        _context.Add(product);
+        _context.AddRange(product);
         await _context.SaveChangesAsync();
         return product;
-
     }
 }
