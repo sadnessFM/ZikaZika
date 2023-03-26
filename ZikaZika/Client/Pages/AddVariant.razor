@@ -1,5 +1,5 @@
 ﻿@page "/AddVar/{productId:int}"
-@inject IProductService ProductService
+@inject IProductService varService
 @inject NavigationManager nigger
 @using System.ComponentModel.DataAnnotations
 
@@ -56,8 +56,8 @@
                 OriginalPrice = Model.OriginalPrice
             };
 
-        /*await DbContext.ProductVariants.AddAsync(variant);
-        await DbContext.SaveChangesAsync();*/
+        await varService.ProductVariants.AddAsync(variant);
+        await DbContext.SaveChangesAsync();
 
         nigger.NavigateTo($"/product/{ProductId}");
     }
