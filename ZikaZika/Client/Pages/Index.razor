@@ -5,9 +5,9 @@
 @inject ISyncLocalStorageService LocalStorage
 @inject IStatsService StatsService 
 
-@if (category != null)
+@if (_category != null)
 {
-    <h1>@category.Name!</h1>
+    <h1>@_category.Name!</h1>
     <ProductList />
 }
 else
@@ -28,13 +28,13 @@ else
     [Parameter]
     public string CategoryUrl { get; set; }
 
-    private Category category;
+    private Category _category;
 
     protected override async Task OnParametersSetAsync()
     {
         await ProductService.LoadProducts(CategoryUrl);
 
-        category = CategoryUrl != null ? CategoryService.Categories.FirstOrDefault(c => c.Url.ToLower().Equals(CategoryUrl.ToLower())) : null;
+        _category = (CategoryUrl != null! ? CategoryService.Categories.FirstOrDefault(c => c.Url.ToLower().Equals(CategoryUrl.ToLower())) : null) ?? throw new InvalidOperationException();
 
         await StatsService.IncrementVisits();
         await StatsService.GetVisits();

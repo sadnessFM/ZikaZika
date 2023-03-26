@@ -15,7 +15,13 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
 
-    [HttpPut("product" )]
+    [HttpPost("{variant}")]
+    public async Task<ActionResult<Product>> AddProduct(ProductVariant variant)
+    {
+        return Ok(await _productService.AddProductVariant(variant));
+    }
+
+    [HttpPost("{product}" )]
     public async Task<ActionResult<Product>> AddProduct(Product product)
     {
         return Ok(await _productService.AddProduct(product));
@@ -33,7 +39,7 @@ public class ProductController : ControllerBase
         return Ok(await _productService.GetProductsByCategory(categoryUrl));
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<Product>> GetProduct(int id) {
         return Ok(await _productService.GetProduct(id));
     }

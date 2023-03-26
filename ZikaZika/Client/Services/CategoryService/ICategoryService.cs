@@ -6,4 +6,5 @@ internal interface ICategoryService
 {
     List<Category> Categories { get; set; }
     Task LoadCategories();
+    Task<List<Category>> LoadCategoriesNames();
 }

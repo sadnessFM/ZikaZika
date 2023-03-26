@@ -1,12 +1,18 @@
-﻿namespace ZikaZika.Shared;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ZikaZika.Shared;
 
 public class CartItem
 {
     public int ProductId { get; set; }
     public int EditionId { get; set; }
-    public string ProductTitle { get; set; }
-    public string EditionName { get; set; }
+    [Required] 
+    public string ProductTitle { get; set; } = null!;
+    [Required] 
+    public string EditionName { get; set; } = null!;
+    [Required]
     public decimal Price { get; set; }
-    public string Image { get; set; }
+    [Required]
+    public string Image { get; set; } = null!;
     public int Quantity { get; set; }
 }

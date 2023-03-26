@@ -7,9 +7,9 @@
 <BlazoredTypeahead SearchMethod="@SearchProduct"
                    TValue="Product"
                    TItem="Product"
-                   Value="selectedProduct"
+                   Value="_selectedProduct"
                    ValueChanged="HandleSearch"
-                   ValueExpression="@(() => selectedProduct)"
+                   ValueExpression="@(() => _selectedProduct)"
                    placeholder="найди смысл...">
     <SelectedTemplate>
         @context.Title
@@ -30,7 +30,7 @@
 
 
 @code {
-    private Product selectedProduct;
+    private Product _selectedProduct;
 
     protected override void OnInitialized()
     {
@@ -51,8 +51,8 @@
     private void HandleSearch(Product product)
     {
         if (product == null) return;
-        selectedProduct = product;
-        NavigationManager.NavigateTo($"product/{selectedProduct.Id}");
+        _selectedProduct = product;
+        NavigationManager.NavigateTo($"product/{_selectedProduct.Id}");
     }
 
     private async Task<IEnumerable<Product>> SearchProduct(string searchText)

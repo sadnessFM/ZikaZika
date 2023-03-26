@@ -16,6 +16,11 @@ public class CategoryService : ICategoryService
 
     public async Task LoadCategories()
     {
-        Categories = await _http.GetFromJsonAsync<List<Category>>("api/Category");
+        Categories = await _http.GetFromJsonAsync<List<Category>>("api/Category") ?? throw new InvalidOperationException();
+    }
+
+    public async Task<List<Category>> LoadCategoriesNames()
+    {
+        return await _http.GetFromJsonAsync<List<Category>>("api/Category") ?? throw new InvalidOperationException();
     }
 }

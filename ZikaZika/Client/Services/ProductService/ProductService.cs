@@ -21,25 +21,21 @@ public class ProductService : IProductService
 
     public async Task LoadProducts(string categoryUrl = null)
     {
-        if (categoryUrl == null)
-        {
-            Products = await _http.GetFromJsonAsync<List<Product>>("api/Product");
-        }
-        else
-        {
-            Products = await _http.GetFromJsonAsync<List<Product>>($"api/Product/Category/{categoryUrl}");
-        }
+        Products = categoryUrl == null
+            ? await _http.GetFromJsonAsync<List<Product>>("api/Product") ?? throw new InvalidOperationException()
+            : await _http.GetFromJsonAsync<List<Product>>($"api/Product/Category/{categoryUrl}") ??
+              throw new InvalidOperationException();
         OnChange.Invoke();
     }
 
     public async Task<Product> GetProduct(int id)
     {
-        return await _http.GetFromJsonAsync<Product>($"api/Product/{id}");
+        return await _http.GetFromJsonAsync<Product>($"api/Product/{id}") ?? throw new InvalidOperationException();
     }
 
     public async Task<List<Product>> SearchProducts(string searchText)
     {
-        return await _http.GetFromJsonAsync<List<Product>>($"api/Product/Search/{searchText}");
+        return await _http.GetFromJsonAsync<List<Product>>($"api/Product/Search/{searchText}") ?? throw new InvalidOperationException();
     }
 
     public async Task<Product> AddProduct(Product product)
@@ -52,17 +48,3 @@ public class ProductService : IProductService
         return JsonSerializer.Deserialize<Product>(responseBody) ?? throw new InvalidOperationException();
     }
 }
-
-/* "variants": [
-{
-    "productId": 0,
-    "edition": {
-        "id": 0,
-        "name": "string"
-    },
-    "editionId": 0,
-    "price": 0,
-    "originalPrice": 0
-}
-],
-*/

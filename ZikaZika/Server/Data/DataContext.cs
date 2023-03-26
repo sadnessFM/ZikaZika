@@ -4,7 +4,7 @@ using ZikaZika.Shared;
 
 namespace ZikaZika.Server.Data;
 
-public class DataContext : DbContext
+public sealed class DataContext : DbContext
 {
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
@@ -16,6 +16,7 @@ public class DataContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<Edition> Editions { get; set; }
     public DbSet<Stats> Stats { get; set; }
+    public DbSet<ProductVariant> ProductVariants { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

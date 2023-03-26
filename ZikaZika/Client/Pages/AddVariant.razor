@@ -1,0 +1,79 @@
+﻿@page "/AddVar/{productId:int}"
+@inject IProductService ProductService
+@inject NavigationManager nigger
+@using System.ComponentModel.DataAnnotations
+
+<h1>Add Product Variant</h1>
+
+<EditForm Model="@Model" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label for="editionId">Edition</label>
+        <InputSelect id="editionId" class="form-control" @bind-Value="@Model.EditionId">
+            @foreach (var edition in editions)
+            {
+                <option value="@edition.Id">@edition.Name</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => Model.EditionId)" />
+    </div>
+
+    <div class="form-group">
+        <label for="price">Price</label>
+        <InputNumber id="price" class="form-control" @bind-Value="@Model.Price" />
+        <ValidationMessage For="@(() => Model.Price)" />
+    </div>
+
+    <div class="form-group">
+        <label for="originalPrice">Original Price</label>
+        <InputNumber id="originalPrice" class="form-control" @bind-Value="@Model.OriginalPrice" />
+        <ValidationMessage For="@(() => Model.OriginalPrice)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int ProductId { get; set; }
+
+    private AddProductVariantModel Model = new AddProductVariantModel();
+    private List<Edition> editions = new List<Edition>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        /*editions = await DbContext.Editions.ToListAsync();*/
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var variant = new ProductVariant
+            {
+                ProductId = ProductId,
+                EditionId = Model.EditionId,
+                Price = Model.Price,
+                OriginalPrice = Model.OriginalPrice
+            };
+
+        /*await DbContext.ProductVariants.AddAsync(variant);
+        await DbContext.SaveChangesAsync();*/
+
+        nigger.NavigateTo($"/product/{ProductId}");
+    }
+
+    public class AddProductVariantModel
+    {
+        [Required(ErrorMessage = "Price is required.")]
+        [Range(0, double.MaxValue, ErrorMessage = "Invalid price.")]
+        public decimal Price { get; set; }
+    
+        [Required(ErrorMessage = "Original price is required.")]
+        [Range(0, double.MaxValue, ErrorMessage = "Invalid original price.")]
+        public decimal OriginalPrice { get; set; }
+    
+        [Required(ErrorMessage = "Edition is required.")]
+        public int EditionId { get; set; }
+    }
+}
+

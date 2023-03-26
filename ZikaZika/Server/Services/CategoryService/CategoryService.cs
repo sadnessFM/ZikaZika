@@ -21,6 +21,6 @@ public class CategoryService : ICategoryService
     public async Task<Category> GetCategoryByUrl(string categoryUrl)
     {
         return await _context.Categories.
-            FirstOrDefaultAsync(c => c.Url.ToLower().Equals(categoryUrl.ToLower()));
+            FirstOrDefaultAsync(c => c.Url.ToLower().Equals(categoryUrl.ToLower())) ?? throw new InvalidOperationException();
     }
 }
