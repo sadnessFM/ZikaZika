@@ -43,7 +43,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        /*editions = await DbContext.Editions.ToListAsync();*/
+        editions = await varService.Editions.ToListAsync();
     }
 
     private async Task HandleValidSubmit()
