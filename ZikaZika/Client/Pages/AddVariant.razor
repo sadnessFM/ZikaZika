@@ -41,14 +41,14 @@
     private AddProductVariantModel Model = new AddProductVariantModel();
     private List<Edition> editions = new List<Edition>();
 
-    protected override async Task OnInitializedAsync()
+    /*protected override async Task OnInitializedAsync()
     {
         editions = await varService.Editions.ToListAsync();
-    }
+    }*/
 
     private async Task HandleValidSubmit()
     {
-        var variant = new ProductVariant
+        /*var variant = new ProductVariant
             {
                 ProductId = ProductId,
                 EditionId = Model.EditionId,
@@ -59,9 +59,10 @@
         await varService.ProductVariants.AddAsync(variant);
         await DbContext.SaveChangesAsync();
 
-        nigger.NavigateTo($"/product/{ProductId}");
+        nigger.NavigateTo($"/product/{ProductId}"); */
     }
 
+    
     public class AddProductVariantModel
     {
         [Required(ErrorMessage = "Price is required.")]

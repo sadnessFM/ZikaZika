@@ -25,7 +25,5 @@ public class EditionController : ControllerBase
     public async Task<ActionResult<Edition>> GetEdition(string name)
     {
         return Ok(await _service.GetEdition(name));
-    } 
-
-        
+    }
 }
