@@ -88,9 +88,9 @@
     {
         return product.Views switch
         {
-            > 1000000 => $"{((float)product.Views / 1000000):#.##}M",
-            > 100000 => $"{((float)product.Views / 1000):#}K",
-            _ => product.Views > 1000 ? $"{((float)product.Views / 1000):#.##}K" : product.Views.ToString("0##")
+            > 1000000 => $"{(float)product.Views / 1000000:#.##}M",
+            > 100000 => $"{(float)product.Views / 1000:#}K",
+            _ => product.Views > 1000 ? $"{(float)product.Views / 1000:#.##}K" : product.Views.ToString("0##")
             };
     }
 }
