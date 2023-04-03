@@ -10,10 +10,8 @@ public class Product
     public List<ProductVariant> Variants { get; set; } = new();
     public DateTime? DateCreated { get; set; } = DateTime.Now;
     public int Views { get; set; }
-    /*
-    public bool IsPublic { get; set; }
-    public bool IsDeleted { get; set; }
-    public Category Category { get; set; }
-    public DateTime? DateUpdated { get; set; }
-    */
+    public bool IsPublic { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
+    //public Category Category { get; set; }
+    public DateTime? DateUpdated { get; set; } = DateTime.Now;
 }

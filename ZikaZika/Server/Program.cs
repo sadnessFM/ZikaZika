@@ -45,6 +45,18 @@ app.UseRouting();
 
 app.MapRazorPages();
 app.MapControllers();
+
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode == 403)
+    {
+        context.Request.Path = "/AccessDenied";
+        await next();
+    }
+});
+
 app.MapFallbackToFile("index.html");
 
 app.UseCors(cors => cors

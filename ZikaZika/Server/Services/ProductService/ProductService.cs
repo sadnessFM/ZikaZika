@@ -51,9 +51,7 @@ public class ProductService : IProductService
 
     public async Task<Product> AddProduct(Product product)
     {
-        await _context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Products ON");
-        _context.Set<Product>().AsNoTracking();
-        _context.AddRange(product);
+        _context.Add(product);
         await _context.SaveChangesAsync();
         return product;
     }
