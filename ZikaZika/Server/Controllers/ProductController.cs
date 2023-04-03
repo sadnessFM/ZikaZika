@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ZikaZika.Server.Services.ProductService;
 using ZikaZika.Shared;
 
@@ -15,8 +16,8 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
 
-    [HttpPut("product" )]
-    public async Task<ActionResult<Product>> AddProduct(Product product)
+    [HttpPost("product" )]
+    public async Task<ActionResult> AddProduct(Product product)
     {
         return Ok(await _productService.AddProduct(product));
     }

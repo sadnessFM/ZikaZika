@@ -53,16 +53,23 @@ public class ProductService : IProductService
     }
 }
 
-/* "variants": [
+/* XHRPOSThttps://localhost:44332/api/ProductController/AddProduct/ZikaZika.Shared.Product
+[HTTP/2 405 Method Not Allowed 4ms]
+
+ 
+1
+
 {
-    "productId": 0,
-    "edition": {
-        "id": 0,
-        "name": "string"
-    },
-    "editionId": 0,
-    "price": 0,
-    "originalPrice": 0
+"Title":"fsdfsadf",
+"Description":"dvsdfvdf",
+"Image":"https://via.placeholder.com/300x300",
+"CategoryId":3,
+"DateCreated":"2023-04-03T12:40:11.415+03:00",
+"Views":0,
+"IsPublic":false,
+"IsDeleted":false,
+"DateUpdated":"2023-04-03T12:40:11.431+03:00"
 }
-],
+
+
 */
