@@ -11,8 +11,25 @@
         </div>
 
         <div class="content px-4">
-            @Body
+            <ErrorBoundary @ref="@_error" Context="Exception">
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent>
+                    <div class ="alert bg-danger text-white alert-dismissible">
+                        @Exception.GetType(): @Exception.Message
+                        <button class="btn-close" @onclick="@_error.Recover"></button>
+                    </div>
+                </ErrorContent>
+            </ErrorBoundary>
+            
         </div>
     </div>
 </div>
 <BlazoredToasts />
+
+@code{
+
+    private ErrorBoundary _error;
+
+}
