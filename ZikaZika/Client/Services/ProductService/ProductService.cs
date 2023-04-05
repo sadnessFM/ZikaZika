@@ -16,7 +16,7 @@ public class ProductService : IProductService
         _http = http;
     }
 
-    public async Task LoadProducts(string categoryUrl = null)
+    public async Task LoadProducts(string categoryUrl)
     {
         if (categoryUrl == null)
         {
