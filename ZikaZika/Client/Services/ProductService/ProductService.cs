@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
+﻿using System.Net.Http.Json;
 using ZikaZika.Shared;
 
 namespace ZikaZika.Client.Services.ProductService;
@@ -10,7 +7,7 @@ public class ProductService : IProductService
 {
     private readonly HttpClient _http;
 
-    public event Action OnChange;
+    public event Action OnChange = null!;
 
     public List<Product> Products { get; set; } = new();
 
@@ -23,26 +20,33 @@ public class ProductService : IProductService
     {
         if (categoryUrl == null)
         {
-            Products = await _http.GetFromJsonAsync<List<Product>>("api/Product");
+            Products = await _http.GetFromJsonAsync<List<Product>>("api/Product") ?? throw new InvalidOperationException();
         }
         else
         {
-            Products = await _http.GetFromJsonAsync<List<Product>>($"api/Product/Category/{categoryUrl}");
+            Products = await _http.GetFromJsonAsync<List<Product>>($"api/Product/Category/{categoryUrl}") ?? throw new InvalidOperationException();
         }
         OnChange.Invoke();
     }
 
     public async Task<Product> GetProduct(int id)
     {
-        return await _http.GetFromJsonAsync<Product>($"api/Product/{id}");
+        return await _http.GetFromJsonAsync<Product>($"api/Product/{id}") ?? throw new InvalidOperationException();
     }
 
     public async Task<List<Product>> SearchProducts(string searchText)
     {
-        return await _http.GetFromJsonAsync<List<Product>>($"api/Product/Search/{searchText}");
+        return await _http.GetFromJsonAsync<List<Product>>($"api/Product/Search/{searchText}") ?? throw new InvalidOperationException();
     }
 
-    public async Task<Product> AddProduct(Product product)
+    public async Task<HttpResponseMessage> AddProduct(Product product)
+    {
+        return await _http.PostAsJsonAsync("api/ProductController/AddProduct/", product);
+    }
+}
+
+/*
+ public async Task<Product> AddProduct(Product product)
     {
         string jsonProduct = JsonSerializer.Serialize(product);
         StringContent content = new(jsonProduct, Encoding.UTF8, "application/json");
@@ -51,18 +55,4 @@ public class ProductService : IProductService
         string responseBody = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<Product>(responseBody) ?? throw new InvalidOperationException();
     }
-}
-
-/* "variants": [
-{
-    "productId": 0,
-    "edition": {
-        "id": 0,
-        "name": "string"
-    },
-    "editionId": 0,
-    "price": 0,
-    "originalPrice": 0
-}
-],
 */
