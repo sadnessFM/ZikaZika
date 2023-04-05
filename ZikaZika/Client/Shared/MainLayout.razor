@@ -18,6 +18,7 @@
                 <ErrorContent>
                     <div class ="alert bg-danger text-white alert-dismissible">
                         @Exception.GetType(): @Exception.Message
+                        @* ReSharper disable once CSharpWarnings::CS8602 *@
                         <button class="btn-close" @onclick="@_error.Recover"></button>
                     </div>
                 </ErrorContent>
@@ -29,6 +30,5 @@
 <BlazoredToasts />
 
 @code{
-
-    private ErrorBoundary _error = null!;
-
+    private ErrorBoundary? _error;
+}

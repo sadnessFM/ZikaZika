@@ -16,27 +16,27 @@ public class ProductService : IProductService
         _http = http;
     }
 
-    public async Task LoadProducts(string categoryUrl)
+    public async Task LoadProducts(string categoryUrl = null)
     {
         if (categoryUrl == null)
         {
-            Products = await _http.GetFromJsonAsync<List<Product>>("api/Product") ?? throw new InvalidOperationException();
+            Products = await _http.GetFromJsonAsync<List<Product>>("api/Product");
         }
         else
         {
-            Products = await _http.GetFromJsonAsync<List<Product>>($"api/Product/Category/{categoryUrl}") ?? throw new InvalidOperationException();
+            Products = await _http.GetFromJsonAsync<List<Product>>($"api/Product/Category/{categoryUrl}");
         }
         OnChange.Invoke();
     }
 
     public async Task<Product> GetProduct(int id)
     {
-        return await _http.GetFromJsonAsync<Product>($"api/Product/{id}") ?? throw new InvalidOperationException();
+        return await _http.GetFromJsonAsync<Product>($"api/Product/{id}");
     }
 
     public async Task<List<Product>> SearchProducts(string searchText)
     {
-        return await _http.GetFromJsonAsync<List<Product>>($"api/Product/Search/{searchText}") ?? throw new InvalidOperationException();
+        return await _http.GetFromJsonAsync<List<Product>>($"api/Product/Search/{searchText}");
     }
 
     public async Task<HttpResponseMessage> AddProduct(Product product)
