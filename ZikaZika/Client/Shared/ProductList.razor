@@ -4,11 +4,8 @@
 
 <div class="row" style="padding-top:10px">
     <select class="form-control" @onchange="SortStateCheck">
-        <option value="">-- Select Country --</option>
-        @foreach (var country in Sort)
-        {
-            <option value="@country.CountryId">@country.CountryName</option>
-        }
+        <option value="">Сортировать по</option>
+        <option id="NameAsc">По имени А-Я</option>
     </select>
 
 </div>
@@ -81,13 +78,30 @@
             : description;
     }
 
-    private void SortStateCheck(ChangedEventArgs event)
+    private void SortStateCheck(ChangedEventArgs eventr)
     {
-        cityList.Clear();
-        cityName = string.Empty;
-        countryId = countryEvent.Value.ToString();
-        countryName = countryList.FirstOrDefault(s => s.CountryId == countryId).CountryName;
-        cityList = await Http.GetJsonAsync<List<Cities>>("api/Countries/GetCities/" + countryId);
+        switch eventr
+        {
+            case "NameAsc":
+                SortbBy(Sort.NameAsc);
+                break;
+
+            case "NameAsc":
+                SortbBy(Sort.NameAsc);
+                break;
+
+            case "NameAsc":
+                SortbBy(Sort.NameAsc);
+                break;
+
+            case "NameAsc":
+                SortbBy(Sort.NameAsc);
+                break;
+
+            default:
+                break;
+        }
+
         this.StateHasChanged();
     }
 
