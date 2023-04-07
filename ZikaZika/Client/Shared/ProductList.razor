@@ -1,6 +1,17 @@
-﻿@inject IProductService ProductService
+﻿@using ZikaZika.Shared
+@inject IProductService ProductService
 @implements IDisposable
 
+<div class="row" style="padding-top:10px">
+    <select class="form-control" @onchange="SortStateCheck">
+        <option value="">-- Select Country --</option>
+        @foreach (var country in Sort)
+        {
+            <option value="@country.CountryId">@country.CountryName</option>
+        }
+    </select>
+
+</div>
 
 <li><button class="dropdown-item" type="button" @onclick="()=>SortBy(Sort.NameAsc)">По имени А-Я</button></li>
 <li><button class="dropdown-item" type="button" @onclick="()=>SortBy(Sort.NameDesc)">По имени Я-А</button></li>
@@ -56,10 +67,10 @@
             case 1:
                 return $"{variants[0].Price} руб.";
             default:
-            {
-                decimal minPrice = variants.Min(v => v.Price);
-                return $"От {minPrice} руб.";
-            }
+                {
+                    decimal minPrice = variants.Min(v => v.Price);
+                    return $"От {minPrice} руб.";
+                }
         }
     }
 
@@ -70,8 +81,15 @@
             : description;
     }
 
-    private async Task SortBy(Sort sorting)
+    private void SortStateCheck(ChangedEventArgs event)
     {
-        await ProductService.SortBy(sorting);
+        cityList.Clear();
+        cityName = string.Empty;
+        countryId = countryEvent.Value.ToString();
+        countryName = countryList.FirstOrDefault(s => s.CountryId == countryId).CountryName;
+        cityList = await Http.GetJsonAsync<List<Cities>>("api/Countries/GetCities/" + countryId);
+        this.StateHasChanged();
     }
+
+    private async Task SortBy(Sort sorting) => await ProductService.SortBy(sorting);
 }
