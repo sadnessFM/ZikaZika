@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Security.Cryptography;
 using ZikaZika.Shared;
 
 namespace ZikaZika.Client.Services.ProductService;
@@ -7,7 +8,7 @@ public class ProductService : IProductService
 {
     private readonly HttpClient _http;
 
-    public event Action OnChange = null!;
+    public event Action OnChange;
 
     public List<Product> Products { get; set; } = new();
 
@@ -21,6 +22,7 @@ public class ProductService : IProductService
         if (categoryUrl == null)
         {
             Products = await _http.GetFromJsonAsync<List<Product>>("api/Product");
+            Products!.OrderByDescending(p => p.Title);
         }
         else
         {
@@ -41,7 +43,19 @@ public class ProductService : IProductService
 
     public async Task<HttpResponseMessage> AddProduct(Product product)
     {
-        return await _http.PostAsJsonAsync("api/ProductController/AddProduct/", product);
+        return await _http.PostAsJsonAsync("api/Product/AddProduct/", product);
+    }
+    public async Task<List<Product>> SortBy(Sort sorting = Sort.NameAsc)
+    {
+        Products = await _http.GetFromJsonAsync<List<Product>>("/api/Product");
+        Products = sorting switch
+        {
+            Sort.NameDesc => Products.OrderByDescending(p => p.Title).ToList(),
+            Sort.PriceAsc => Products.OrderBy(p => p.Variants.FirstOrDefault().Price).ToList(),
+            Sort.PriceDesc => Products.OrderByDescending(p => p.Variants.FirstOrDefault().Price).ToList(),
+            _ => Products.OrderBy(p => p.Title).ToList()
+        };
+        return Products.ToList();
     }
 }
 

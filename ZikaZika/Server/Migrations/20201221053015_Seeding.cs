@@ -9,7 +9,7 @@ namespace ZikaZika.Server.Migrations
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "Icon", "Name", "Url" },
-                values: new object[] { 1, "book", "Books", "books" });
+                values: new object[] { 1, "book", "Books", "Products" });
 
             migrationBuilder.InsertData(
                 table: "Categories",

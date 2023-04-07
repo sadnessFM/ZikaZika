@@ -10,7 +10,7 @@
             <TopMenu />
         </div>
 
-        <div class="content px-4">
+        <div class="content px-4 ">
             <ErrorBoundary @ref="@_error" Context="Exception">
                 <ChildContent>
                     @Body
@@ -30,5 +30,20 @@
 <BlazoredToasts />
 
 @code{
+
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/js/jquery/jquery-3.6.0.min.js");
+            await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/js/popper/popper.min.js");
+            await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/js/bootstrap/bootstrap.min.js");
+            await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/js/JavaScript.js");
+        }
+    }
+
     private ErrorBoundary? _error;
 }
