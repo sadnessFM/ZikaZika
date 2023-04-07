@@ -10,4 +10,5 @@ public interface IProductService
     Task<Product> GetProduct(int id);
     Task<List<Product>> SearchProducts(string searchText);
     Task<HttpResponseMessage> AddProduct(Product product);
+    Task<List<Product>> SortBy(Sort sorting = Sort.NameAsc);
 }

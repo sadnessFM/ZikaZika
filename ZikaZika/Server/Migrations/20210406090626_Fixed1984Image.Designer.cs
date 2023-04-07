@@ -45,7 +45,7 @@ namespace ZikaZika.Server.Migrations
                             Id = 1,
                             Icon = "book",
                             Name = "Books",
-                            Url = "books"
+                            Url = "Products"
                         },
                         new
                         {

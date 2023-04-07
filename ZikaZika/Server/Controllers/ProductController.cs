@@ -15,7 +15,7 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
 
-    [HttpPost("product" )]
+    [HttpPost("product")]
     public async Task<ActionResult> AddProduct(Product product)
     {
         return Ok(await _productService.AddProduct(product));

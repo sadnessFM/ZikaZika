@@ -12,6 +12,6 @@ public class Product
     public int Views { get; set; }
     public bool IsPublic { get; set; } = false;
     public bool IsDeleted { get; set; } = false;
-    //public Category Category { get; set; }
     public DateTime? DateUpdated { get; set; } = DateTime.Now;
+    //public Category Category { get; set; }
 }
