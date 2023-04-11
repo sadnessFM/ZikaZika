@@ -1,24 +1,18 @@
-﻿@using ZikaZika.Shared
-@inject IProductService ProductService
+﻿@inject IProductService ProductService
 @implements IDisposable
 
-<div class="row" style="padding-top:10px">
-    <select class="form-control" @onchange="SortStateCheck">
-        <option value="">Сортировать по</option>
-        <option id="NameAsc">По имени А-Я</option>
-    </select>
+<select>
+    <option value="NameAsc" @onclick="() => SortBy(Sort.NameAsc)">По имени а-я</option>
+    <option value="NameDesc" @onclick="() => SortBy(Sort.NameDesc)">По имени Я-А</option>
+    <option value="PriceAsc" @onclick="() => SortBy(Sort.PriceAsc)">По цене от 0 до 1337</option>
+    <option value="PriceDesc" @onclick="() => SortBy(Sort.PriceDesc)">По цене от -1 до 0</option>
+</select>
 
-</div>
-
-<li><button class="dropdown-item" type="button" @onclick="()=>SortBy(Sort.NameAsc)">По имени А-Я</button></li>
-<li><button class="dropdown-item" type="button" @onclick="()=>SortBy(Sort.NameDesc)">По имени Я-А</button></li>
-<li><button class="dropdown-item" type="button" @onclick="()=>SortBy(Sort.PriceAsc)">По цене от 0 до 1337</button></li>
-<li><button class="dropdown-item" type="button" @onclick="()=>SortBy(Sort.PriceDesc)">По цене от -1 до 0</button></li>
 
 
 <ul class="list-unstyled" style ="text-align: center;
                                   list-style-position: inside;">
-    @foreach (var product in ProductService.Products)
+    @foreach (Product product in ProductService.Products)
     {
         <li class="media my-3">
             <div class="justify-content-center">
@@ -78,32 +72,14 @@
             : description;
     }
 
-    private void SortStateCheck(ChangedEventArgs eventr)
-    {
-        switch eventr
-        {
-            case "NameAsc":
-                SortbBy(Sort.NameAsc);
-                break;
-
-            case "NameAsc":
-                SortbBy(Sort.NameAsc);
-                break;
-
-            case "NameAsc":
-                SortbBy(Sort.NameAsc);
-                break;
-
-            case "NameAsc":
-                SortbBy(Sort.NameAsc);
-                break;
-
-            default:
-                break;
-        }
-
-        this.StateHasChanged();
-    }
-
     private async Task SortBy(Sort sorting) => await ProductService.SortBy(sorting);
+
+    /*
+
+    <button class="dropdown-item" type="button" @onclick="() => SortBy(Sort.NameAsc)">По имени А-Я</button>
+    <button class="dropdown-item" type="button" @onclick="() => SortBy(Sort.NameDesc)">По имени Я-А</button>
+    <button class="dropdown-item" type="button" @onclick="() => SortBy(Sort.PriceAsc)">По цене от 0 до 1337</button>
+    <button class="dropdown-item" type="button" @onclick="() => SortBy(Sort.PriceDesc)">По цене от -1 до 0</button>
+    */
 }
+
